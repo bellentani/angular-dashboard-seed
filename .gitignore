@@ -3,6 +3,7 @@
 # compiled output
 /tmp
 /out-tsc
+/.vscode
 
 # dependencies
 /node_modules
@@ -39,3 +40,11 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# From Bonsai Boot
+.sass-cache/
+node_modules/
+npm-debug.log
+**/_notes
+static/dist/
+static/src/components

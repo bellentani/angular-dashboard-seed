@@ -13,3 +13,126 @@ ng serve --open --live-reload false
 ## Atualizar pacotes (não é preciso)
 
 npm-check-updates -u
+
+
+#Bonsai Boot workflow
+##Workflow para frontend estático usando Gulp
+
+A ideia é utilizar nesse workflow:
+
+* Geração de CSS minificado através com mixins usando o Sass+Compass (``gulp-compass``);
+* Gerar htmls através de includes com template engine (Handlebars), porém, o resultado final deverá ser estático;
+* Levantar um servidor básico usando Express
+* Fazer reload automático quando uma página for alterada (live preview)
+* Testar, corrigir e minificar Javascript de Frontend
+* Instalar bibliotecas e recursos utilizando Bower
+* Deixar apenas como pré-requisito o Node.js, Express.js e o Gulp.js (tentar utilizar no futuro o Bourbon, que ainda não está funcional com seu grid integral como framework)
+
+O objetivo principal é ter uma versão estática do frontend em paralelo com o desenvolvimento para que nenhum das duas áreas (UI e desenvolvimento) tenham problemas com ambiente ou demais processos de cada uma delas.
+
+##Pré-requisito
+
+Caso não tenha o Gulp instalado globalmente:
+
+``npm install gulp -g``
+
+Também é preciso instalar o Bower globalmente:
+
+``npm install bower -g``
+
+##Instalação
+
+Ao clonar o projeto você irá precisar realizar os dois itens abaixo.
+
+Baixe o projeto e dê:
+
+``npm install``
+
+
+##Tarefas cadastradas
+
+As tarefas estão em fase inicial, mas já dá pra utilizá-las para desenvolvimento.
+
+###Converte Sass com Compass
+
+``gulp compass``
+
+Os arquivos são salvos na pasta ´´dist/css´´.
+
+###Gera HTMLs utilizando o Handlebars.js
+
+``gulp hbs``
+
+Ela gera os arquivos html que estão na pasta ``src/templates/pages``, mas pode usar os arquivos na pasta ``src/templates/partials`` para compor sua estrutura como *partiais* do *Handlebars.js*.
+
+Os arquivos são salvos na pasta ``dist``.
+
+###Vigia modificações nos arquivos
+
+``gulp watch``
+
+Essa é a tarefa principal, ela ficará rodando enquanto não for interrompida e processa todos os arquivos editados na pasta ``src``.
+
+A tarefa vigia os arquivos da tarefa ``gulp-sass``, ``gulp-handlebars`` e ``gulp-fonts``. Toda vez que tem alteração em arquivos presentes nestas tasks (.hbs, .scss, .sass, etc) nas pastas específicas de cada uma ele as executa.
+
+Depois de fazer qualquer modificação ela carrega um servidor e abre em seu navegador padrão o arquivo ``dist/main.html``. Isso acontece na porta 8080. Se quiser ver outros arquivos basta colocar a URL sempre partindo do diretório ``src``.
+
+**Exemplos:**
+
+```
+localhost:8080/seuarquivo.html
+localhost:8080/umdiretorio/seuarquivo.html
+```
+
+##Outras tasks
+``gulp browserSync``
+
+``gulp fonts``
+
+``gulp images``
+
+``gulp images:opt``
+
+``gulp js``
+
+``gulp useref``
+
+``gulp clean:dist``
+
+``gulp build``
+
+``gulp build:min``
+
+``gulp default``
+
+##Estrutura de pastas
+
+```
+dist (arquivos gerados pela task ``gulp deploy`` ou pela ``gulp-watch``)
+  |_css
+    |_ ...
+  |_img
+  |_js
+    |_plugins
+    |_vendors
+    |_ ...
+src
+  |_scss
+    |_ ...
+  |_img
+  |_js
+    |_plugins
+    |_vendors
+    |_ ...
+  |_templates
+    |_data
+    |_helpers
+    |_pages
+    |_partials
+      |_molecules
+```
+
+##Atualização
+
+###**2017.02.24** Suporte a ES2015 e instalação do gulp-babel
+Para arquivos JS serem processados e "traduzidos" de ES2015 para Javascript eles precisam ser colocados na pasta `src/js/es2015`. Depois de processados pela task `gulp js-babel` (que roda pelo `gulp watch` também) eles são jogados já na pasta raiz `dist/js` (são removidos da subpasta `/es2015`). Tive que fazer isso porque o `gulp-babel` estava renderizando arquivos minificados e plugins, dando problema nos mesmos. Para evitar isso, somente arquivos mapeados como *ES2015* serão processados.
